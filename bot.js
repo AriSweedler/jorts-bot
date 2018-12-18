@@ -1,17 +1,17 @@
 var HTTPS = require('https');
 
 const botID = process.env.BOT_ID;
-console.log(`Bot ID is ${botID}`);
+const kennyID = process.env.KENNY_ID;
 
 /* callback to respond to all GroupMe messages */
 function respond() {
   var request = JSON.parse(this.req.chunks[0]);
+  console.log();
   console.log(`We have a message from ${request.name} (sender ID = ${request.sender_id})`);
   console.log(`The message: ${request.text}`);
-  var botRegex = /^\/cool guy$/;
 
   /* If there's a request, and it matches the specified regex, then... */
-  if(request.text && botRegex.test(request.text)) {
+  if(String(request.sender_id) === kennyID) {
     this.res.writeHead(200);
     postMessage();
     this.res.end();
@@ -25,27 +25,30 @@ function respond() {
 /* when GET requested, describe what you do */
 function describe() {
   this.res.writeHead(200);
-  this.res.end("I should describe what the bot does here.");
+  botReq.end(`
+Whenever Kenneth Nicholson (sender_id == ${kennyID}) sends a message, respond with
+'like this message to dislike kenny’s message'
+
+This could do other stuff, too. But for now, it doesn't.
+  `);
 }
 
 function postMessage() {
-  var botResponse, options, body, botReq;
-
-  options = {
+  const options = {
     hostname: 'api.groupme.com',
     path: '/v3/bots/post',
     method: 'POST'
   };
 
-  botResponse = "like this message to dislike kenny’s message";
-  body = {
+  const botResponse = "like this message to dislike kenny’s message";
+  const body = {
     "bot_id" : botID,
     "text" : botResponse
   };
 
   console.log('sending ~' + botResponse + '~ to ' + botID);
 
-  botReq = HTTPS.request(options, function(res) {
+  const botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 202) {
         //neat, no error
       } else {
