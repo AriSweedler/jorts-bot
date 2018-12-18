@@ -1,10 +1,13 @@
 var HTTPS = require('https');
 
-var botID = process.env.BOT_ID;
+const botID = process.env.BOT_ID;
+console.log(`Bot ID is ${botID}`);
 
 /* callback to respond to all GroupMe messages */
 function respond() {
   var request = JSON.parse(this.req.chunks[0]);
+  console.log(`We have a message from ${this.req.name}`);
+  console.log(request);
   var botRegex = /^\/cool guy$/;
 
   /* If there's a request, and it matches the specified regex, then... */
@@ -34,12 +37,13 @@ function postMessage() {
     method: 'POST'
   };
 
+  botResponse = "myResponse";
   body = {
     "bot_id" : botID,
     "text" : botResponse
   };
 
-  console.log('sending ' + botResponse + ' to ' + botID);
+  console.log('sending ~' + botResponse + '~ to ' + botID);
 
   botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 202) {
