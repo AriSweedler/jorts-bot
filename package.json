@@ -1,21 +1,20 @@
 {
-  "name": "node-js-getting-started",
-  "version": "0.1.2",
-  "description": "A sample Node.js app using Express 4",
+  "name": "kenny-headass-bot",
+  "version": "0.0.1",
+  "description": "A GroupMe bot to roast a buddy",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "director": "",
-    "cool-ascii-faces": "~1.3.x"
+    "director": ""
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "8.11.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
+    "url": "https://github.com/AriSweedler/kenny-bot"
   },
   "keywords": [
     "node",

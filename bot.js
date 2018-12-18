@@ -1,12 +1,13 @@
 var HTTPS = require('https');
-var cool = require('cool-ascii-faces');
 
 var botID = process.env.BOT_ID;
 
+/* callback to respond to all GroupMe messages */
 function respond() {
-  var request = JSON.parse(this.req.chunks[0]),
-      botRegex = /^\/cool guy$/;
+  var request = JSON.parse(this.req.chunks[0]);
+  var botRegex = /^\/cool guy$/;
 
+  /* If there's a request, and it matches the specified regex, then... */
   if(request.text && botRegex.test(request.text)) {
     this.res.writeHead(200);
     postMessage();
@@ -18,10 +19,14 @@ function respond() {
   }
 }
 
+/* when GET requested, describe what you do */
+function describe() {
+  this.res.writeHead(200);
+  this.res.end("I should describe what the bot does here.");
+}
+
 function postMessage() {
   var botResponse, options, body, botReq;
-
-  botResponse = cool();
 
   options = {
     hostname: 'api.groupme.com',
@@ -38,7 +43,7 @@ function postMessage() {
 
   botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 202) {
-        //neat
+        //neat, no error
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
       }
@@ -47,11 +52,13 @@ function postMessage() {
   botReq.on('error', function(err) {
     console.log('error posting message '  + JSON.stringify(err));
   });
+
   botReq.on('timeout', function(err) {
     console.log('timeout posting message '  + JSON.stringify(err));
   });
+
   botReq.end(JSON.stringify(body));
 }
 
-
 exports.respond = respond;
+exports.describe = describe;
