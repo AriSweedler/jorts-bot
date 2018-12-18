@@ -10,11 +10,10 @@ function respond() {
   /* If there's a request, and it matches the specified regex, then... */
   this.res.writeHead(200);
   const sender_id = String(request.sender_id);
-  console.log(`Ari: ${process.env.ARI_ID}. Sender: ${sender_id}`);
   if (sender_id == process.env.KENNY_ID) postMessage(`like this message to dislike kenny’s message`);
   else if (sender_id == process.env.JONATHAN_SCHULTZ_ID) postMessage(`do your house jobs you geeds`);
   else if (sender_id == process.env.CLAYTON_HO_ID) postMessage(`Oy. You soft CUNTS.`);
-  else if (sender_id == process.env.ARI_ID) postMessage(`... dad?`);
+  // else if (sender_id == process.env.ARI_ID) postMessage(`... dad?`);
   else console.log("don't care");
   this.res.end();
 }
@@ -28,7 +27,7 @@ Respond to specific users with a message.
 Kenneth Nicholson (${process.env.KENNY_ID}): 'like this message to dislike kenny’s message'
 Jonathan Schulz (${process.env.JONATHAN_SCHULTZ_ID}): 'do your house jobs you geeds'
 Clayton Ho (${process.env.CLAYTON_HO_ID}): 'Oy. You soft CUNTS'
-Ari Sweedler (${process.env.ARI_ID}): '... dad?'
+//Ari Sweedler (${process.env.ARI_ID}): '... dad?'
 Christian Garcia (${process.env.CHRISTIAN_GARCIA_ID}): 'TODO'
 
 This could do other stuff, too. But for now, it doesn't.
