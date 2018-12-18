@@ -6,8 +6,8 @@ console.log(`Bot ID is ${botID}`);
 /* callback to respond to all GroupMe messages */
 function respond() {
   var request = JSON.parse(this.req.chunks[0]);
-  console.log(`We have a message from ${this.req.name}`);
-  console.log(request);
+  console.log(`We have a message from ${request.name} (sender ID = ${request.sender_id})`);
+  console.log(`The message: ${request.text}`);
   var botRegex = /^\/cool guy$/;
 
   /* If there's a request, and it matches the specified regex, then... */
@@ -37,7 +37,7 @@ function postMessage() {
     method: 'POST'
   };
 
-  botResponse = "myResponse";
+  botResponse = "like this message to dislike kenny’s message";
   body = {
     "bot_id" : botID,
     "text" : botResponse
