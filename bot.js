@@ -10,11 +10,25 @@ function respond() {
   /* If there's a request, and it matches the specified regex, then... */
   this.res.writeHead(200);
   const sender_id = String(request.sender_id);
-  if (sender_id == process.env.KENNY_ID) postMessage(`like this message to dislike kenny’s message`);
+
+  /* don't respond to the bot's message */
+  if (sender_id == process.env.MY_ID || request.text.includes("said")) {
+    return;
+  }
+
+  console.log(`What u said: ${request.text}. Did that have a ';' in it? ${request.text.includes(";")}.`);
+  if (request.text.includes(";")) {
+    postMessage(`Someone said ';'`);
+  }
+
+  if (sender_id == process.env.KENNY_ID && request.text.includes("🖤")) {
+    postMessage(`like this message to dislike kenny’s message`);
+  }
   else if (sender_id == process.env.JONATHAN_SCHULTZ_ID) postMessage(`do your house jobs you geeds`);
   else if (sender_id == process.env.CLAYTON_HO_ID) postMessage(`Oy. You soft CUNTS.`);
-  // else if (sender_id == process.env.ARI_ID) postMessage(`... dad?`);
-  else console.log("don't care");
+  else {
+    console.log(`User by the name of ${request.name} has id ${sender_id}`);
+  }
   this.res.end();
 }
 
