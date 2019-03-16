@@ -1,12 +1,13 @@
-import kenny_listener from './listener/kenny'
-import alan_listener from './listener/alan'
+const kenny = require('./listener/kenny');
+const alan = require('./listener/alan');
 var HTTPS = require('https');
 
-const msgs = 0;
+let msgs = 0;
 
 /* callback to respond to all POST requests (GroupMe messages send POSTS
  * requests to the bot */
 function respond() {
+  console.log(`Someone sent me a message`);
   if (msgs >= 10) return;
   msgs++;
 
@@ -21,8 +22,8 @@ function respond() {
   }
 
   /* Send the message through each callback */
-  kenny_listener(message);
-  alan_listener(message);
+  kenny.listener(message);
+  alan.listener(message);
 
   //TODO log this into an in-memory database or something if it isn't already
   console.log(`User by the name of ${message.name} has id ${message.sender_id}`);
@@ -33,10 +34,11 @@ function respond() {
 
 /* when GET requested, describe what you do */
 function describe() {
+  console.log(`Someone asked me to describe myself.`);
   this.res.writeHead(200);
   this.res.end(`
-kenny_listener;
-alan_listener;
+kenny.listener;
+alan.listener;
 TODO STRINGIFY the {message.name --> sender_id} dictionary
   `);
 }
@@ -53,7 +55,7 @@ function postMessage(botResponse) {
     "text" : botResponse
   };
 
-  console.log('sending ~' + botResponse + '~ to ' + botID);
+  console.log('sending ~' + botResponse + '~ to ' + process.env.botID);
 
   const botReq = HTTPS.request(options, function(res) {
     if (res.statusCode != 202) {
