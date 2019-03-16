@@ -1,34 +1,33 @@
+import kenny_listener from './listener/kenny'
+import alan_listener from './listener/alan'
 var HTTPS = require('https');
 
-const botID = process.env.BOT_ID;
+const msgs = 0;
 
-/* callback to respond to all GroupMe messages */
+/* callback to respond to all POST requests (GroupMe messages send POSTS
+ * requests to the bot */
 function respond() {
-  var request = JSON.parse(this.req.chunks[0]);
-  console.log(`We have a message from ${request.name} (sender ID = ${request.sender_id}): ${request.text}`);
+  if (msgs >= 10) return;
+  msgs++;
 
-  /* If there's a request, and it matches the specified regex, then... */
-  this.res.writeHead(200);
-  const sender_id = String(request.sender_id);
+  /* get the message data from the raw HTTP request */
+  var message = JSON.parse(this.req.chunks[0]);
+  console.log(`We have a message from ${message.name}`);
+  console.log(`\t(sender ID = ${message.sender_id}): ${message.text}`);
 
   /* don't respond to the bot's message */
-  if (sender_id == process.env.MY_ID || request.text.includes("said")) {
+  if (String(message.sender_id) == process.env.MY_ID) {
     return;
   }
 
-  console.log(`What u said: ${request.text}. Did that have a ';' in it? ${request.text.includes(";")}.`);
-  if (request.text.includes(";")) {
-    postMessage(`Someone said ';'`);
-  }
+  /* Send the message through each callback */
+  kenny_listener(message);
+  alan_listener(message);
 
-  if (sender_id == process.env.KENNY_ID && request.text.includes("🖤")) {
-    postMessage(`like this message to dislike kenny’s message`);
-  }
-  else if (sender_id == process.env.JONATHAN_SCHULTZ_ID) postMessage(`do your house jobs you geeds`);
-  else if (sender_id == process.env.CLAYTON_HO_ID) postMessage(`Oy. You soft CUNTS.`);
-  else {
-    console.log(`User by the name of ${request.name} has id ${sender_id}`);
-  }
+  //TODO log this into an in-memory database or something if it isn't already
+  console.log(`User by the name of ${message.name} has id ${message.sender_id}`);
+
+  /* We don't respond to the request at all, because we just have to send a POST request */
   this.res.end();
 }
 
@@ -36,15 +35,9 @@ function respond() {
 function describe() {
   this.res.writeHead(200);
   this.res.end(`
-Respond to specific users with a message.
-
-Kenneth Nicholson (${process.env.KENNY_ID}): 'like this message to dislike kenny’s message'
-Jonathan Schulz (${process.env.JONATHAN_SCHULTZ_ID}): 'do your house jobs you geeds'
-Clayton Ho (${process.env.CLAYTON_HO_ID}): 'Oy. You soft CUNTS'
-//Ari Sweedler (${process.env.ARI_ID}): '... dad?'
-Christian Garcia (${process.env.CHRISTIAN_GARCIA_ID}): 'TODO'
-
-This could do other stuff, too. But for now, it doesn't.
+kenny_listener;
+alan_listener;
+TODO STRINGIFY the {message.name --> sender_id} dictionary
   `);
 }
 
@@ -56,7 +49,7 @@ function postMessage(botResponse) {
   };
 
   const body = {
-    "bot_id" : botID,
+    "bot_id" : process.env.botID,
     "text" : botResponse
   };
 
@@ -79,5 +72,6 @@ function postMessage(botResponse) {
   botReq.end(JSON.stringify(body));
 }
 
+exports.postMessage = postMessage;
 exports.respond = respond;
 exports.describe = describe;
