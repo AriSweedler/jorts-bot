@@ -1,5 +1,6 @@
 const kenny = require('./listener/kenny');
 const alan = require('./listener/alan');
+const ari = require('./listener/ari');
 var HTTPS = require('https');
 
 let msgs = 0;
@@ -24,6 +25,7 @@ function respond() {
   /* Send the message through each callback */
   kenny.listener(message);
   alan.listener(message);
+  ari.listener(message);
 
   //TODO log this into an in-memory database or something if it isn't already
   console.log(`User by the name of ${message.name} has id ${message.sender_id}`);
@@ -39,6 +41,7 @@ function describe() {
   this.res.end(`
 kenny.listener;
 alan.listener;
+ari.listener;
 TODO STRINGIFY the {message.name --> sender_id} dictionary
   `);
 }
@@ -51,11 +54,11 @@ function postMessage(botResponse) {
   };
 
   const body = {
-    "bot_id" : process.env.botID,
+    "bot_id" : process.env.BOT_ID,
     "text" : botResponse
   };
 
-  console.log('sending ~' + botResponse + '~ to ' + process.env.botID);
+  console.log('sending ~' + botResponse + '~ to ' + process.env.BOT_ID);
 
   const botReq = HTTPS.request(options, function(res) {
     if (res.statusCode != 202) {
