@@ -1,10 +1,9 @@
-const kenny = require('./listener/kenny');
-const alan = require('./listener/alan');
-const ari = require('./listener/ari');
 var HTTPS = require('https');
-
 const known_sender_ids = {};
-const people = [ari, kenny, alan];
+const people_listeners = [
+  require('./listener/kenny'),
+  require('./listener/alan')
+];
 
 
 /* callback to respond to all POST requests (GroupMe messages send POSTS
@@ -22,12 +21,10 @@ function respond() {
     return;
   }
 
-  /* Send the message through each callback (TODO is there a better way to do this?) */
-  for (let person of people) {
-    person.listener(message)
-  }
+  /* Send the message through each module's 'listener' callback */
+  people_listeners.map(person => person.listener(message));
 
-  /* We don't respond to the request at all, out listeners will send a POST request */
+  /* We don't respond to the request at all, our listener callbacks will send a POST request */
   this.res.end();
 }
 
@@ -36,7 +33,7 @@ function describe() {
   console.log(`Someone asked me to describe myself.`);
   this.res.writeHead(200);
   this.res.end(`
-Our callbacks: ${people.map(x => x.name).join(', ')}.
+Our callbacks: ${people_listeners.map(person => person.name).join(', ')}.
 known sender ids:
 ${JSON.stringify(known_sender_ids, null, '\t')}
   `);
@@ -54,7 +51,7 @@ function postMessage(botResponse) {
     "text" : botResponse
   };
 
-  console.log('sending ~' + botResponse + '~ to ' + process.env.BOT_ID);
+  console.log(`sending ~${botResponse}~ to ${process.env.BOT_ID}`);
 
   const botReq = HTTPS.request(options, function(res) {
     if (res.statusCode != 202) {
