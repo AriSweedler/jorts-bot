@@ -29,11 +29,6 @@ function respond() {
   this.res.end();
 }
 
-/* when GET requested, describe what you do */
-const known_ids = {
-  ...process.env,
-  "BOT_ID": "redacted"
-}
 function describe() {
   console.log(`Someone asked me to describe myself.`);
   this.res.writeHead(200);
@@ -41,9 +36,6 @@ function describe() {
 Our callbacks: ${people_listeners.map(person => person.name).join(', ')}.
 newly learned sender ids:
 ${JSON.stringify(known_sender_ids, null, '\t')}
-
-already known sender ids:
-${JSON.stringify(known_ids, null, '\t')}
   `);
 }
 
