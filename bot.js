@@ -1,7 +1,6 @@
 var HTTPS = require('https');
 const known_sender_ids = {};
 const people_listeners = [
-  require('./listener/kenny'),
   require('./listener/alan')
 ];
 
@@ -39,7 +38,7 @@ ${JSON.stringify(known_sender_ids, null, '\t')}
   `);
 }
 
-function postMessage(botResponse) {
+function postMessage(text) {
   const options = {
     hostname: 'api.groupme.com',
     path: '/v3/bots/post',
@@ -48,10 +47,10 @@ function postMessage(botResponse) {
 
   const body = {
     "bot_id" : process.env.BOT_ID,
-    "text" : botResponse
+    "text" : text
   };
 
-  console.log(`sending ~${botResponse}~ to ${process.env.BOT_ID}`);
+  console.log(`sending ~${text}~ to ${process.env.BOT_ID}`);
 
   const botReq = HTTPS.request(options, function(res) {
     if (res.statusCode != 202) {

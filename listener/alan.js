@@ -62,7 +62,7 @@ TRANSLATION (${numMessages} messages):
 ${translation}
 
 ===== END TRANSLATION =====
-Copyright 2019 LaviDidIt industries, brazilian translation v4.62.90
+Copyright 2019 LaviDidIt industries, brazilian translation engine v4.62.90
 
 `);
   }
